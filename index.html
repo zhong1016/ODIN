@@ -386,18 +386,26 @@
             // 判斷
             if (!this.count) return alert('輸入不可為空');
 
-            let count = this.count;
-
             // 累積
             let [white, green, blue, purple, gold] = [0, 0, 0, 0, 0];
 
             // 計算
-            for (let i = 0; i < count; i++) {
-              if (0.7094572291 >= Math.random()) white++;
-              if (0.2756246724 >= Math.random()) green++;
-              if (0.0132303987 >= Math.random()) blue++;
-              if (0.0015873998 >= Math.random()) purple++;
-              if (0.0001003 >= Math.random()) gold++;
+            for (let i = 0; i < this.count; i++) {
+              let ramdom = Math.random().toFixed(10);
+
+              if (ramdom > 1 - 0.7094572291 && ramdom < 1 - 0.2756246724)
+                white++;
+              else if (ramdom > 1 - 0.2756246724 && ramdom < 1 - 0.0132303987)
+                green++;
+              else if (ramdom > 1 - 0.0132303987 && ramdom < 1 - 0.0015873998)
+                blue++;
+              else if (ramdom > 1 - 0.0015873998 && ramdom < 1 - 0.0001003001)
+                purple++;
+              else if (ramdom > 1 - 0.0001003001) {
+                gold++;
+              } else {
+                white++;
+              }
             }
 
             // 返回結果
@@ -410,7 +418,7 @@
                * 3. 無條件進位
                * 4. 好玩？不！花錢
                */
-              ((((count / 11) * 2100) / 30580) * 10000).toFixed()
+              ((((this.count / 11) * 2100) / 30580) * 10000).toFixed()
             );
           },
         },
