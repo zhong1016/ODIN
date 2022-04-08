@@ -14,7 +14,7 @@
         <h1 class="text-center font-bold text-3xl mt-16">
           奧丁：神叛 模擬器 (娛樂用)
         </h1>
-        <h1 class="text-center font-bold text-3xl mt-2">
+        <div class="text-center font-bold text-3xl mt-2">
           <a
             target="_blank"
             class="mx-4 no-underline text-blue-700 hover:underline"
@@ -27,26 +27,137 @@
             href="https://line.me/ti/g2/GiZD31zLFYzSXF-FwEjiOsLiJBgIqC7GtxCUvQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
             >Line社群</a
           >
-        </h1>
-        <div class="flex justify-center mt-2">
-          <div>
-            <h1 class="text-center font-bold text-3xl">
-              目前累積強化 {{accumulation}}
-            </h1>
-          </div>
-          <div class="flex items-center">
-            <button
-              @click="[accumulation,result] = [0,[]]"
-              class="mx-2 h-8 w-12 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-500 hover:border-transparent rounded"
-            >
-              Reset
-            </button>
-          </div>
         </div>
 
-        <div class="hidden lg:flex flex-col">
-          <div class="my-2 flex flex-row justify-center">
-            <div class="mt-4 flex justify-center">
+        <div class="mt-2 flex justify-center">
+          <select
+            @change="[this.view,accumulation,count,result] = [this.blackHeart,0,'',[]]"
+            v-model="blackHeart"
+            class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            aria-label="Default select example"
+          >
+            <option value="default">選擇衝裝 / 抽卡</option>
+            <option value="equipment">我要衝裝</option>
+            <option value="card">我要抽卡</option>
+          </select>
+        </div>
+
+        <!-- 衝裝 -->
+        <main v-if="view === 'equipment' ">
+          <div class="flex justify-center mt-2">
+            <div>
+              <h1 class="text-center font-bold text-xl">
+                目前累積強化 {{accumulation}}
+              </h1>
+            </div>
+            <div class="flex items-center">
+              <button
+                @click="[accumulation,count,result] = [0,'',[]]"
+                class="mx-2 h-8 w-12 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-500 hover:border-transparent rounded"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div class="hidden lg:flex flex-col">
+            <div class="my-2 flex flex-row justify-center">
+              <div class="mt-4 flex justify-center">
+                <select
+                  v-model="equipment"
+                  class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  aria-label="Default select example"
+                >
+                  <option value="default">選擇道具</option>
+                  <option value="arms">武器</option>
+                  <option value="equip">裝備</option>
+                  <option value="cloak">披風</option>
+                  <option value="accessory">飾品</option>
+                  <option value="blackAccessory">商城飾品</option>
+                </select>
+
+                <select
+                  v-model="nowLV"
+                  class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  aria-label="Default select example"
+                >
+                  <option value="default">目前等級</option>
+                  <option
+                    v-for="(item, index) in 20"
+                    :key="index"
+                    :value="item"
+                  >
+                    {{item}}
+                  </option>
+                </select>
+
+                <select
+                  class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  aria-label="Default select example"
+                  v-model="blackLV"
+                >
+                  <option value="default">強化等級</option>
+                  <option
+                    v-for="(item, index) in 20"
+                    :key="index"
+                    :value="item"
+                  >
+                    {{item}}
+                  </option>
+                </select>
+
+                <input
+                  v-model="count"
+                  class="px-4 bg-gray-200 appearance-none border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
+                  type="text"
+                  placeholder="輸入數量"
+                />
+
+                <button
+                  @click="start"
+                  class="mx-2 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                >
+                  開始強化
+                </button>
+              </div>
+            </div>
+
+            <div class="my-2 flex flex-row justify-center">
+              <table class="text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead
+                  class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                >
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-xl">強化等級</th>
+                    <th scope="col" class="px-6 py-3 text-xl">成功</th>
+                    <th scope="col" class="px-6 py-3 text-xl">失敗</th>
+                    <th scope="col" class="px-6 py-3 text-xl">機率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(res, index) in result"
+                    :key="index"
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <th scope="row" class="text-center text-xl">
+                      {{res.level}}
+                    </th>
+                    <td class="px-6 py-4 text-center text-xl">
+                      {{res.success}}
+                    </td>
+                    <td class="px-6 py-4 text-center text-xl">{{res.fail}}</td>
+                    <td class="px-6 py-4 text-center text-xl">
+                      {{res.blackUp}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="flex lg:hidden flex-col">
+            <div class="my-2 flex flex-col justify-center">
               <select
                 v-model="equipment"
                 class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -59,7 +170,8 @@
                 <option value="accessory">飾品</option>
                 <option value="blackAccessory">商城飾品</option>
               </select>
-
+            </div>
+            <div class="my-2 flex flex-col justify-center">
               <select
                 v-model="nowLV"
                 class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -70,7 +182,8 @@
                   {{item}}
                 </option>
               </select>
-
+            </div>
+            <div class="my-2 flex flex-col justify-center">
               <select
                 class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                 aria-label="Default select example"
@@ -81,14 +194,16 @@
                   {{item}}
                 </option>
               </select>
-
+            </div>
+            <div class="p-2 flex flex-col justify-center">
               <input
                 v-model="count"
-                class="px-4 bg-gray-200 appearance-none border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
+                class="p-2 bg-gray-200 appearance-none border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
                 type="text"
                 placeholder="輸入數量"
               />
-
+            </div>
+            <div class="p-2 flex flex-col justify-center">
               <button
                 @click="start"
                 class="mx-2 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -96,119 +211,111 @@
                 開始強化
               </button>
             </div>
-          </div>
 
-          <div class="my-2 flex flex-row justify-center">
-            <table class="text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead
-                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-              >
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-xl">強化等級</th>
-                  <th scope="col" class="px-6 py-3 text-xl">成功</th>
-                  <th scope="col" class="px-6 py-3 text-xl">失敗</th>
-                  <th scope="col" class="px-6 py-3 text-xl">機率</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(res, index) in result"
-                  :key="index"
-                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            <div class="my-2 flex flex-row justify-center">
+              <table class="text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead
+                  class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
-                  <th scope="row" class="text-center text-xl">{{res.level}}</th>
-                  <td class="px-6 py-4 text-center text-xl">{{res.success}}</td>
-                  <td class="px-6 py-4 text-center text-xl">{{res.fail}}</td>
-                  <td class="px-6 py-4 text-center text-xl">{{res.blackUp}}</td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-xl">強化</th>
+                    <th scope="col" class="px-6 py-3 text-xl">成功</th>
+                    <th scope="col" class="px-6 py-3 text-xl">失敗</th>
+                    <th scope="col" class="px-6 py-3 text-xl">機率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(res, index) in result"
+                    :key="index"
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <th scope="row" class="text-center text-xl">
+                      {{res.level}}
+                    </th>
+                    <td class="px-6 py-4 text-center text-xl">
+                      {{res.success}}
+                    </td>
+                    <td class="px-6 py-4 text-center text-xl">{{res.fail}}</td>
+                    <td class="px-6 py-4 text-center text-xl">
+                      {{res.blackUp}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </main>
 
-        <div class="flex lg:hidden flex-col">
-          <div class="my-2 flex flex-col justify-center">
-            <select
-              v-model="equipment"
-              class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              aria-label="Default select example"
-            >
-              <option value="default">選擇道具</option>
-              <option value="arms">武器</option>
-              <option value="equip">裝備</option>
-              <option value="cloak">披風</option>
-              <option value="accessory">飾品</option>
-              <option value="blackAccessory">商城飾品</option>
-            </select>
-          </div>
-          <div class="my-2 flex flex-col justify-center">
-            <select
-              v-model="nowLV"
-              class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              aria-label="Default select example"
-            >
-              <option value="default">目前等級</option>
-              <option v-for="(item, index) in 20" :key="index" :value="item">
-                {{item}}
-              </option>
-            </select>
-          </div>
-          <div class="my-2 flex flex-col justify-center">
-            <select
-              class="mx-2 form-select appearance-none block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              aria-label="Default select example"
-              v-model="blackLV"
-            >
-              <option value="default">強化等級</option>
-              <option v-for="(item, index) in 20" :key="index" :value="item">
-                {{item}}
-              </option>
-            </select>
-          </div>
-          <div class="p-2 flex flex-col justify-center">
-            <input
-              v-model="count"
-              class="p-2 bg-gray-200 appearance-none border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
-              type="text"
-              placeholder="輸入數量"
-            />
-          </div>
-          <div class="p-2 flex flex-col justify-center">
-            <button
-              @click="start"
-              class="mx-2 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-            >
-              開始強化
-            </button>
-          </div>
-
-          <div class="my-2 flex flex-row justify-center">
-            <table class="text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead
-                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        <!-- 抽卡 -->
+        <main v-if="view === 'card' ">
+          <div class="flex justify-center mt-2">
+            <div>
+              <h1 class="text-center font-bold text-xl">
+                目前累積台幣 {{accumulation}}
+              </h1>
+            </div>
+            <div class="flex items-center">
+              <button
+                @click="[accumulation,count,result] = [0,'',[]]"
+                class="mx-2 h-8 w-12 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-500 hover:border-transparent rounded"
               >
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-xl">強化</th>
-                  <th scope="col" class="px-6 py-3 text-xl">成功</th>
-                  <th scope="col" class="px-6 py-3 text-xl">失敗</th>
-                  <th scope="col" class="px-6 py-3 text-xl">機率</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(res, index) in result"
-                  :key="index"
-                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <th scope="row" class="text-center text-xl">{{res.level}}</th>
-                  <td class="px-6 py-4 text-center text-xl">{{res.success}}</td>
-                  <td class="px-6 py-4 text-center text-xl">{{res.fail}}</td>
-                  <td class="px-6 py-4 text-center text-xl">{{res.blackUp}}</td>
-                </tr>
-              </tbody>
-            </table>
+                Reset
+              </button>
+            </div>
           </div>
-        </div>
+
+          <div class="flex flex-col">
+            <div class="my-2 flex flex-row justify-center">
+              <div class="mt-4 flex justify-center">
+                <input
+                  v-model="count"
+                  class="px-4 bg-gray-200 appearance-none border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
+                  type="text"
+                  placeholder="輸入數量"
+                />
+
+                <button
+                  @click="startCard"
+                  class="mx-2 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                >
+                  開始抽卡
+                </button>
+              </div>
+            </div>
+
+            <div class="my-2 flex flex-row justify-center">
+              <table class="text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead
+                  class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                >
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-lg">白</th>
+                    <th scope="col" class="px-6 py-3 text-lg">綠</th>
+                    <th scope="col" class="px-6 py-3 text-lg">藍</th>
+                    <th scope="col" class="px-6 py-3 text-lg">紫</th>
+                    <th scope="col" class="px-6 py-3 text-lg">金</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(res, index) in result"
+                    :key="index"
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <th class="px-6 py-4 text-center text-lg">{{res.white}}</th>
+                    <td class="px-6 py-4 text-center text-lg">{{res.green}}</td>
+                    <td class="px-6 py-4 text-center text-lg">{{res.blue}}</td>
+                    <td class="px-6 py-4 text-center text-lg">
+                      {{res.purple}}
+                    </td>
+                    <td class="px-6 py-4 text-center text-lg">{{res.gold}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
       </section>
     </div>
 
@@ -217,12 +324,14 @@
       Vue.createApp({
         data() {
           return {
+            blackHeart: 'default',
             equipment: 'default',
             nowLV: 'default',
             blackLV: 'default',
             count: '',
             result: [],
             accumulation: 0,
+            view: '',
           };
         },
         methods: {
@@ -271,6 +380,38 @@
             }
             // 顯示總數
             this.accumulation += parseInt(this.count);
+          },
+
+          startCard() {
+            // 判斷
+            if (!this.count) return alert('輸入不可為空');
+
+            let count = this.count;
+
+            // 累積
+            let [white, green, blue, purple, gold] = [0, 0, 0, 0, 0];
+
+            // 計算
+            for (let i = 0; i < count; i++) {
+              if (0.7094572291 >= Math.random()) white++;
+              if (0.2756246724 >= Math.random()) green++;
+              if (0.0132303987 >= Math.random()) blue++;
+              if (0.0015873998 >= Math.random()) purple++;
+              if (0.0001003 >= Math.random()) gold++;
+            }
+
+            // 返回結果
+            this.result.push({ white, green, blue, purple, gold });
+            // 顯示台幣
+            this.accumulation += parseInt(
+              /*
+               * 1. 11抽 2100鑽
+               * 2. 30580鑽 10000台幣
+               * 3. 無條件進位
+               * 4. 好玩？不！花錢
+               */
+              ((((count / 11) * 2100) / 30580) * 10000).toFixed()
+            );
           },
         },
       }).mount('#app');
