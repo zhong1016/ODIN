@@ -28,9 +28,21 @@
             >Line社群</a
           >
         </h1>
-        <h1 class="text-center font-bold text-3xl mt-2">
-          目前累積強化 {{accumulation}}
-        </h1>
+        <div class="flex justify-center mt-2">
+          <div>
+            <h1 class="text-center font-bold text-3xl">
+              目前累積強化 {{accumulation}}
+            </h1>
+          </div>
+          <div class="flex items-center">
+            <button
+              @click="[accumulation,result] = [0,[]]"
+              class="mx-2 h-8 w-12 active:relative top-1 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-500 hover:border-transparent rounded"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
 
         <div class="hidden lg:flex flex-col">
           <div class="my-2 flex flex-row justify-center">
