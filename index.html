@@ -265,6 +265,30 @@
             </div>
           </div>
 
+          <div class="flex flex-col justify-center mt-2">
+            <div class="flex justify-center items-center">
+              <h1 class="text-center font-bold text-xl">目前累積卡片</h1>
+            </div>
+            <div class="flex justify-center items-center">
+              <table>
+                <tr>
+                  <th class="px-6 py-3">白</th>
+                  <th class="px-6 py-3">綠</th>
+                  <th class="px-6 py-3">藍</th>
+                  <th class="px-6 py-3">紫</th>
+                  <th class="px-6 py-3">金</th>
+                </tr>
+                <tr>
+                  <td class="text-center">{{white}}</td>
+                  <td class="text-center">{{green}}</td>
+                  <td class="text-center">{{blue}}</td>
+                  <td class="text-center">{{purple}}</td>
+                  <td class="text-center">{{gold}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
           <div class="flex flex-col">
             <div class="my-2 flex flex-row justify-center">
               <div class="mt-4 flex justify-center">
@@ -331,7 +355,7 @@
             count: '',
             result: [],
             accumulation: 0,
-            view: '',
+            view: 'card',
           };
         },
         methods: {
@@ -409,7 +433,7 @@
             }
 
             // 返回結果
-            this.result.push({ white, green, blue, purple, gold });
+            this.result.unshift({ white, green, blue, purple, gold });
             // 顯示台幣
             this.accumulation += parseInt(
               /*
@@ -420,6 +444,43 @@
                */
               ((((this.count / 11) * 2100) / 30580) * 10000).toFixed()
             );
+          },
+        },
+        computed: {
+          white() {
+            return !this.result.length
+              ? 0
+              : this.result.length === 1
+              ? this.result[0].white
+              : this.result.map((e) => e.white).reduce((p, c) => p + c);
+          },
+          green() {
+            return !this.result.length
+              ? 0
+              : this.result.length === 1
+              ? this.result[0].green
+              : this.result.map((e) => e.green).reduce((p, c) => p + c);
+          },
+          blue() {
+            return !this.result.length
+              ? 0
+              : this.result.length === 1
+              ? this.result[0].blue
+              : this.result.map((e) => e.blue).reduce((p, c) => p + c);
+          },
+          purple() {
+            return !this.result.length
+              ? 0
+              : this.result.length === 1
+              ? this.result[0].purple
+              : this.result.map((e) => e.purple).reduce((p, c) => p + c);
+          },
+          gold() {
+            return !this.result.length
+              ? 0
+              : this.result.length === 1
+              ? this.result[0].gold
+              : this.result.map((e) => e.gold).reduce((p, c) => p + c);
           },
         },
       }).mount('#app');
